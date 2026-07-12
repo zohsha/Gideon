@@ -1,16 +1,30 @@
 import config
 import requests
+from memory import conversation
 
-def ask_gideon(prompt):
-    url = "http://localhost:11434/api/generate"
+
+
+def ask_gideon(conversation):
+    prompt = ""
+
+    for message in conversation:
+        prompt += f"{message['role']}: {message['content']}\n"
+
+    print(prompt)
+
+    url = config.OLLAMA_URL
 
     payload = {
-        "model": config.model_Name,
+        "model": config.MODEL_NAME,
         "prompt": prompt,
-        "system": config.system_prompt,
-        "stream": config.stream
+        "system": config.SYSTEM_PROMPT,
+        "stream": config.STREAM
     }
 
+
     response = requests.post(url, json=payload)
+    print(response.status_code)
+    print(response.text)
+
     data = response.json()
     return data["response"]
