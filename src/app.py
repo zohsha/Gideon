@@ -15,7 +15,7 @@ def ask_gideon(prompt):
     data = response.json()
     return data["response"]
 
-print("Gideon online. How may I assist you, Zohaib?")
+print("Gideon online. How may I assist you?")
 
 while True:
     user_input = input("You:")
