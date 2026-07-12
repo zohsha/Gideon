@@ -1,0 +1,12 @@
+# Virtual Environment
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Logs
+logs/
+
+# Local data (we'll decide later what to keep)
+data/
