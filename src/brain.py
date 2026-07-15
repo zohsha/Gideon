@@ -1,16 +1,23 @@
 import config
 import requests
-from memory import conversation
-
+from storage import get_facts
 
 
 def ask_gideon(conversation):
     prompt = ""
+    facts = get_facts()
+    # print(facts)
+    prompt += "Known facts:\n"
+
+    for fact in facts:
+        prompt += f"- {fact}\n"
+
+    prompt += "\n"
 
     for message in conversation:
         prompt += f"{message['role']}: {message['content']}\n"
 
-    print(prompt)
+    # print(prompt)
 
     url = config.OLLAMA_URL
 
@@ -23,8 +30,6 @@ def ask_gideon(conversation):
 
 
     response = requests.post(url, json=payload)
-    print(response.status_code)
-    print(response.text)
 
     data = response.json()
     return data["response"]

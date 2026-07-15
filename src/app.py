@@ -1,5 +1,8 @@
 from brain import ask_gideon
 from memory import add_message, get_conversation
+from storage import load_memory
+
+print(load_memory())
 print("Gideon online. How may I assist you?")
 
 while True:
@@ -14,4 +17,4 @@ while True:
     response = ask_gideon(get_conversation())
     add_message("assistant", response)
     print(f"Gideon: {response}")
-    print(get_conversation())
+    
