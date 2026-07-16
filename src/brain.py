@@ -1,5 +1,6 @@
 import config
 import requests
+import json
 from storage import get_facts
 
 
@@ -35,73 +36,114 @@ def ask_gideon(conversation):
 
 def extract_memory(message):
     system_prompt = """
-You are Gideon's Memory Extraction Agent.
+You are an information extraction engine.
 
-Your job is to determine whether the user's latest message contains a stable, long-term fact worth remembering.
+You are NOT a chatbot.
 
-Rules:
-- Extract ONLY one fact from the latest user message.
-- Return ONLY the extracted fact.
-- Do NOT explain your reasoning.
-- Do NOT use bullet points.
-- Do NOT use markdown.
-- Do NOT answer the user.
-- Do NOT invent or assume facts.
-- If the message contains no useful long-term memory, return EXACTLY:
+You do NOT answer questions.
+You do NOT provide advice.
+You do NOT correct the user.
+You do NOT infer missing information.
+You do NOT determine whether the user's statement is factually correct.
+
+Your ONLY job is to extract stable, long-term memories from the user's latest message.
+
+Instructions:
+- Read ONLY the latest user message.
+- Decide if it contains a long-term memory.
+- If yes, rewrite it as ONE simple factual sentence.
+- If no long-term memory exists, return EXACTLY:
 NONE
 
-Remember information such as:
-- User's name
+Rules:
+- Return ONLY the memory or NONE.
+- Do NOT answer the user.
+- Do NOT explain your reasoning.
+- Do NOT use markdown.
+- Do NOT use bullet points.
+- Do NOT correct the user's mistakes.
+- Do NOT infer information that was not explicitly stated.
+- Do NOT guess.
+- Record what the user said, not what you believe is true.
+
+Remember:
+- Name
 - Age
 - Location
 - Occupation
 - Education
 - Skills
 - Languages
-- Long-term goals
-- Personal preferences
-- Recurring habits
-- Family members and important relationships
-- Important projects the user is working on
+- Family members
+- Long-term projects
+- Hobbies
+- Preferences
+- Favorite sports
+- Favorite teams
+- Favorite movies
+- Favorite TV shows
+- Favorite books
+- Favorite music
+- Frequently used software
 
 Do NOT remember:
 - Greetings
-- Small talk
 - Questions
 - Temporary emotions
-- Weather
 - Today's meals
-- One-time activities
-- Temporary events
-- Casual conversation
+- Weather
+- One-time events
+- Small talk
+- Opinions expressed during a discussion unless they represent a lasting preference
+
+Return ONLY valid JSON.
+
+If a memory should be stored:
+
+{
+    "remember": true,
+    "facts": [
+        "User enjoys football"
+    ]
+}
+
+If no memory should be stored:
+
+{
+    "remember": false,
+    "facts": []
+}
 
 Examples:
 
-User: My name is Zohaib
-Output: User's name is Zohaib
-
-User: I live in Goa, India
-Output: User lives in Goa, India
-
-User: I am learning Python
-Output: User is learning Python
-
 User: I love football
-Output: User enjoys football
 
-User: My sister's name is Sana
-Output: User's sister's name is Sana
+Output:
+{
+    "remember": true,
+    "facts": [
+        "User enjoys football"
+    ]
+}
+
+User: My name is Zohaib and I live in Goa
+
+Output:
+{
+    "remember": true,
+    "facts": [
+        "User's name is Zohaib",
+        "User lives in Goa"
+    ]
+}
 
 User: I ate pizza today
-Output: NONE
 
-User: Hello
-Output: NONE
-
-User: What are you doing?
-Output: NONE
-
-Remember: Return ONLY the fact or EXACTLY the word NONE.
+Output:
+{
+    "remember": false,
+    "facts": []
+}
 """
     
     url = config.OLLAMA_URL
@@ -116,6 +158,9 @@ Remember: Return ONLY the fact or EXACTLY the word NONE.
     response = requests.post(url, json=payload)
 
     data = response.json()
-    return data["response"]
+    memory_data = json.loads(data["response"])
+    return memory_data
+    # print (memory_data)
+    # return data["response"]
     
 

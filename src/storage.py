@@ -7,8 +7,8 @@ def load_memory():
     
 def add_fact(fact):
     memory = load_memory()
-    print(memory)
-
+    # print(memory)
+    fact = fact.strip().rstrip(".")
     if fact in memory["facts"]:
         print("memory already there")
     else:
@@ -17,7 +17,7 @@ def add_fact(fact):
 
 def save_memory(Data):
     with open ("data/memory.json", "w") as file:
-        json.dump(Data, file)
+        json.dump(Data, file, indent=4)
 
 def get_facts():
     return load_memory()["facts"]
