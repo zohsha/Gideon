@@ -1,6 +1,6 @@
-from brain import ask_gideon
+from brain import ask_gideon, extract_memory
 from memory import add_message, get_conversation
-from storage import load_memory
+from storage import load_memory, add_fact
 
 print(load_memory())
 print("Gideon online. How may I assist you?")
@@ -13,6 +13,9 @@ while True:
         break
 
     add_message("user", user_input)
+    memory = extract_memory(user_input)
+    if memory != "NONE":
+        add_fact(memory)
 
     response = ask_gideon(get_conversation())
     add_message("assistant", response)
