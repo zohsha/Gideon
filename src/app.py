@@ -14,10 +14,9 @@ while True:
 
     add_message("user", user_input)
     memory = extract_memory(user_input)
-    print(memory)
-    if memory["remember"]:
-        for fact in memory["facts"]:
-            add_fact(fact)
+    # print(memory)
+    for fact in memory["facts"]:
+        add_fact(fact)
 
     response = ask_gideon(get_conversation())
     add_message("assistant", response)

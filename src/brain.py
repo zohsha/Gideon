@@ -51,12 +51,18 @@ Your ONLY job is to extract stable, long-term memories from the user's latest me
 Instructions:
 - Read ONLY the latest user message.
 - Decide if it contains a long-term memory.
-- If yes, rewrite it as ONE simple factual sentence.
-- If no long-term memory exists, return EXACTLY:
-NONE
+- If the message contains one or more long-term facts, extract ALL of them.
+- Extract every long-term fact from the message.
+- Do not stop after the first fact.
 
 Rules:
-- Return ONLY the memory or NONE.
+- Return ONLY valid JSON.
+- Your entire response must be a single JSON object.
+- Never include explanations, markdown, or additional text.
+- If no long-term facts exist, return:
+{
+    "facts": []
+}
 - Do NOT answer the user.
 - Do NOT explain your reasoning.
 - Do NOT use markdown.
@@ -96,12 +102,9 @@ Do NOT remember:
 - Small talk
 - Opinions expressed during a discussion unless they represent a lasting preference
 
-Return ONLY valid JSON.
-
 If a memory should be stored:
 
 {
-    "remember": true,
     "facts": [
         "User enjoys football"
     ]
@@ -110,7 +113,6 @@ If a memory should be stored:
 If no memory should be stored:
 
 {
-    "remember": false,
     "facts": []
 }
 
@@ -120,7 +122,6 @@ User: I love football
 
 Output:
 {
-    "remember": true,
     "facts": [
         "User enjoys football"
     ]
@@ -130,7 +131,6 @@ User: My name is Zohaib and I live in Goa
 
 Output:
 {
-    "remember": true,
     "facts": [
         "User's name is Zohaib",
         "User lives in Goa"
@@ -141,7 +141,6 @@ User: I ate pizza today
 
 Output:
 {
-    "remember": false,
     "facts": []
 }
 """
